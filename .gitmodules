@@ -1,0 +1,3 @@
+[submodule "robomaster_can"]
+	path = robomaster_can
+	url = git@gitlab.developers.cam.ac.uk:cst/prorok-lab/robots-sim2real/robomaster_can.git
