@@ -13,19 +13,21 @@ public:
   MinimalSubscriber()
   : Node("robomaster_bridge")
   {
-    initialize("vcan0");
+    initialize("can0");
     set_led(0, 255, 0);
-    set_gimbal_recover();
     subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(
       "cmd_vel", rclcpp::SensorDataQoS(), std::bind(&MinimalSubscriber::topic_callback, this, _1));
     timer_ = rclcpp::create_timer(
       this, this->get_clock(), rclcpp::Duration(0, 10 * 1e6), std::bind(&MinimalSubscriber::timer_callback, this));
+    timer_watchdog_ = rclcpp::create_timer(
+      this, this->get_clock(), rclcpp::Duration(0, 200 * 1e6), std::bind(&MinimalSubscriber::timer_watchdog_callback, this));
   }
 
 private:
   void topic_callback(const geometry_msgs::msg::Twist::SharedPtr msg) const
   {
     set_twist(msg->linear.x, msg->linear.y, msg->angular.z);
+    this->timer_watchdog_->reset();
   }
 
   void timer_callback(void) const
@@ -33,8 +35,14 @@ private:
     run_10ms();
   }
 
+  void timer_watchdog_callback(void) const
+  {
+    set_twist(0.0, 0.0, 0.0);
+  }
+
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr subscription_;
   rclcpp::TimerBase::SharedPtr timer_;
+  rclcpp::TimerBase::SharedPtr timer_watchdog_;
 };
 
 int main(int argc, char * argv[])
