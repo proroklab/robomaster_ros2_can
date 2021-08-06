@@ -26,7 +26,7 @@ add_subdirectory(robomaster_can)
 include_directories(${CMAKE_SOURCE_DIR}/robomaster_can/include)
 
 add_executable(bridge src/bridge.cpp)
-target_link_libraries(bridge rm_comm_lib)
+target_link_libraries(bridge rm_comm_lib_light)
 
 ament_target_dependencies(bridge rclcpp std_msgs geometry_msgs)
 

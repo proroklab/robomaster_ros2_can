@@ -14,7 +14,6 @@ public:
   : Node("robomaster_bridge")
   {
     initialize("can0");
-    set_led(0, 255, 0);
     subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(
       "cmd_vel", rclcpp::SensorDataQoS(), std::bind(&MinimalSubscriber::topic_callback, this, _1));
     timer_ = rclcpp::create_timer(
@@ -26,7 +25,7 @@ public:
 private:
   void topic_callback(const geometry_msgs::msg::Twist::SharedPtr msg) const
   {
-    set_twist(msg->linear.x, msg->linear.y, msg->angular.z);
+    set_twist(msg->linear.x, msg->linear.y, msg->angular.z * 180.0 / 3.1415);
     this->timer_watchdog_->reset();
   }
 
