@@ -1,3 +1,3 @@
 [submodule "robomaster_can"]
-	path = robomaster_can
+	path = can_bridge/robomaster_can
 	url = ../../robots-sim2real/robomaster_can.git
