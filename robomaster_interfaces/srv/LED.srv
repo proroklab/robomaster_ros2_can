@@ -1,0 +1,11 @@
+uint8 MODE_SOLID=1
+uint8 MODE_FLASHING=2
+
+uint8 r
+uint8 g
+uint8 b
+uint8 mode
+uint16 speed_up
+uint16 speed_down
+---
+bool success
