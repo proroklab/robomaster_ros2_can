@@ -21,16 +21,14 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(emergency_stop_msgs REQUIRED)
 find_package(robomaster_interfaces REQUIRED)
-find_package(ctrl_msgs REQUIRED)
 
-add_subdirectory(robomaster_can)
-include_directories(${CMAKE_SOURCE_DIR}/robomaster_can/include)
+include_directories(${CMAKE_SOURCE_DIR}/robomaster_sdk_can/inc)
 
 add_executable(bridge src/bridge.cpp)
-target_link_libraries(bridge rm_comm_lib_light)
 
-ament_target_dependencies(bridge rclcpp std_msgs geometry_msgs ctrl_msgs robomaster_interfaces)
+ament_target_dependencies(bridge rclcpp std_msgs geometry_msgs robomaster_interfaces emergency_stop_msgs)
 
 install(TARGETS
   bridge
