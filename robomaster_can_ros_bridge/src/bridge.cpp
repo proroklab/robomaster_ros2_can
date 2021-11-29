@@ -4,6 +4,7 @@
 #include "rclcpp/duration.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "robomaster_interfaces/srv/led.hpp"
+#include "robomaster_interfaces/msg/wheel_speed.hpp"
 #include "emergency_stop_msgs/srv/emergency_stop.hpp"
 
 #include "chassis.hpp"
@@ -30,8 +31,10 @@ public:
     emerg_led_request_.mode = 1;
     last_led_request_.mode = 1;
 
-    subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(
-      "cmd_vel", rclcpp::SensorDataQoS(), std::bind(&MinimalSubscriber::topic_callback, this, _1));
+    speed_subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(
+      "cmd_vel", rclcpp::SensorDataQoS(), std::bind(&MinimalSubscriber::topic_callback_speed, this, _1));
+    wheel_speed_subscription_ = this->create_subscription<robomaster_interfaces::msg::WheelSpeed>(
+      "cmd_wheels", rclcpp::SensorDataQoS(), std::bind(&MinimalSubscriber::topic_callback_wheel_speed, this, _1));
     timer_ = rclcpp::create_timer(
       this, this->get_clock(), rclcpp::Duration(0, 10 * 1e6), std::bind(&MinimalSubscriber::timer_callback, this));
     timer_watchdog_ = rclcpp::create_timer(
@@ -43,7 +46,7 @@ public:
   }
 
 private:
-  void topic_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
+  void topic_callback_speed(const geometry_msgs::msg::Twist::SharedPtr msg)
   {
     if (emergency_stopped_)
     {
@@ -52,6 +55,20 @@ private:
     else
     {
       _rm_chassis.send_speed(msg->linear.x, msg->linear.y, msg->angular.z * 180.0 / 3.1415);
+    }
+
+    this->timer_watchdog_->reset();
+  }
+
+  void topic_callback_wheel_speed(const robomaster_interfaces::msg::WheelSpeed::SharedPtr msg)
+  {
+    if (emergency_stopped_)
+    {
+      _rm_chassis.send_wheel_speed(0, 0, 0, 0);
+    }
+    else
+    {
+      _rm_chassis.send_wheel_speed(msg->fr, msg->fl, msg->rl, msg->rr);
     }
 
     this->timer_watchdog_->reset();
@@ -97,12 +114,11 @@ private:
 
   void update_leds(const robomaster_interfaces::srv::LED::Request& request)
   {
-    // send LED command multiple times as it sometimes doesn't make it through...
-    for(int i = 0; i < 2; i++)
-        _rm_led.send_led(request.r, request.g, request.b, request.mode, request.speed_up, request.speed_down, 0x3F);
+    _rm_led.send_led(request.r, request.g, request.b, request.mode, request.speed_up, request.speed_down, 0x3F);
   }
 
-  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr subscription_;
+  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr speed_subscription_;
+  rclcpp::Subscription<robomaster_interfaces::msg::WheelSpeed>::SharedPtr wheel_speed_subscription_;
   rclcpp::Service<robomaster_interfaces::srv::LED>::SharedPtr led_service_;
   rclcpp::Service<emergency_stop_msgs::srv::EmergencyStop>::SharedPtr emergency_stop_service_;
   rclcpp::TimerBase::SharedPtr timer_;
