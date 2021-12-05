@@ -20,18 +20,25 @@ find_package(ament_cmake REQUIRED)
 
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(emergency_stop_msgs REQUIRED)
 find_package(robomaster_interfaces REQUIRED)
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 include_directories(${CMAKE_SOURCE_DIR}/robomaster_sdk_can/inc)
 
 add_executable(controlling src/controlling.cpp)
+add_executable(sensing src/sensing.cpp)
 
 ament_target_dependencies(controlling rclcpp std_msgs geometry_msgs robomaster_interfaces emergency_stop_msgs)
+ament_target_dependencies(sensing rclcpp std_msgs geometry_msgs sensor_msgs robomaster_interfaces)
+
+target_link_libraries(sensing Eigen3::Eigen)
 
 install(TARGETS
   controlling
+  sensing
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
