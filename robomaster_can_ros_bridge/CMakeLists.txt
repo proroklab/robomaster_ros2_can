@@ -26,12 +26,12 @@ find_package(robomaster_interfaces REQUIRED)
 
 include_directories(${CMAKE_SOURCE_DIR}/robomaster_sdk_can/inc)
 
-add_executable(bridge src/bridge.cpp)
+add_executable(controlling src/controlling.cpp)
 
-ament_target_dependencies(bridge rclcpp std_msgs geometry_msgs robomaster_interfaces emergency_stop_msgs)
+ament_target_dependencies(controlling rclcpp std_msgs geometry_msgs robomaster_interfaces emergency_stop_msgs)
 
 install(TARGETS
-  bridge
+  controlling
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
