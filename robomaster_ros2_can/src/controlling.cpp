@@ -125,9 +125,14 @@ private:
 
     void timer_watchdog_callback(void)
     {
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Watchdog triggered");
+        if (chassis_workmode_enabled_)
+        {
+            RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Watchdog triggered");
+            _rm_chassis.send_workmode(0);
+            chassis_workmode_enabled_ = false;
+        }
+
         _rm_chassis.send_wheel_speed(0, 0, 0, 0);
-        _rm_chassis.send_workmode(0);
     }
 
     void update_leds(const robomaster_interfaces::srv::LED::Request& request)
@@ -139,6 +144,7 @@ private:
     {
         if (!chassis_workmode_enabled_)
         {
+            RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Watchdog reset");
             _rm_chassis.send_workmode(1);
             chassis_workmode_enabled_ = true;
         }
