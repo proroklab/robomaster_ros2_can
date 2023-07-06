@@ -96,7 +96,7 @@ private:
     void led_service_callback(const std::shared_ptr<robomaster_interfaces::srv::LED::Request> request,
         std::shared_ptr<robomaster_interfaces::srv::LED::Response>      response)
     {
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Incoming request\nr: %ld g: %ld b: %ld",
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Incoming request\nr: %d g: %d b: %d",
             request->r, request->g, request->b);
 
         last_led_request_ = *request;
