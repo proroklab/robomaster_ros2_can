@@ -12,7 +12,7 @@
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
-  <depend>ros2_robomaster_msgs</depend>
+  <depend>robomaster_msgs</depend>
   <depend>emergency_stop_msgs</depend>
 
   <test_depend>ament_lint_auto</test_depend>

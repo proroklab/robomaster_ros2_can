@@ -2,5 +2,5 @@
 	path = robomaster_can_ros_bridge/robomaster_sdk_can
 	url = https://github.com/janblumenkamp/robomaster_sdk_can.git
 [submodule "ros2_robomaster_msgs"]
-	path = ros2_robomaster_msgs
+	path = robomaster_msgs
 	url = https://github.com/proroklab/ros2_robomaster_msgs.git

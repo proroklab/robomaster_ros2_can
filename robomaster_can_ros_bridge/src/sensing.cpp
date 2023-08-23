@@ -5,7 +5,7 @@
 #include "geometry_msgs/msg/twist_stamped.hpp"
 #include "geometry_msgs/msg/quaternion_stamped.hpp"
 #include "sensor_msgs/msg/battery_state.hpp"
-#include "ros2_robomaster_msgs/msg/wheel_speed.hpp"
+#include "robomaster_msgs/msg/wheel_speed.hpp"
 
 #include "can_streambuf.hpp"
 #include "dds.hpp"
@@ -59,7 +59,7 @@ public:
                 rclcpp::SensorDataQoS()
             );
 
-        _wheel_speed_publisher = create_publisher<ros2_robomaster_msgs::msg::WheelSpeed>(
+        _wheel_speed_publisher = create_publisher<robomaster_msgs::msg::WheelSpeed>(
                 "wheel_speed",
                 rclcpp::SensorDataQoS()
             );
@@ -100,7 +100,7 @@ private:
 
     void cb_wheel_enc(const metadata&, const wheel_encoders& wheel_encoders)
     {
-        ros2_robomaster_msgs::msg::WheelSpeed wheel_speed{};
+        robomaster_msgs::msg::WheelSpeed wheel_speed{};
         wheel_speed.header.frame_id = "body";
         wheel_speed.header.stamp = get_clock()->now();
         wheel_speed.fr = wheel_encoders.rpm[0];
@@ -143,7 +143,7 @@ private:
     }
 
     rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr _speed_publisher;
-    rclcpp::Publisher<ros2_robomaster_msgs::msg::WheelSpeed>::SharedPtr _wheel_speed_publisher;
+    rclcpp::Publisher<robomaster_msgs::msg::WheelSpeed>::SharedPtr _wheel_speed_publisher;
     rclcpp::Publisher<sensor_msgs::msg::BatteryState>::SharedPtr _battery_state_publisher;
     rclcpp::Publisher<geometry_msgs::msg::QuaternionStamped>::SharedPtr _attitude_publisher;
 
