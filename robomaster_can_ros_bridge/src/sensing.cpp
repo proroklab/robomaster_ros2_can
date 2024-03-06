@@ -42,7 +42,7 @@ public:
         );
         _dds.subscribe(
             std::function<void(const metadata&, const wheel_encoders&)>(std::bind(&RoboMasterSensing::cb_wheel_enc, this, _1, _2)),
-            50
+            200
         );
         _dds.subscribe(
             std::function<void(const metadata&, const velocity&)>(std::bind(&RoboMasterSensing::cb_vel, this, _1, _2)),
